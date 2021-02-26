@@ -1,89 +1,64 @@
-import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
 
-export class Camera extends Component {
-  pickFromGallery = async () => {
-    const { granted } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    if (granted) {
-      let data = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1 //1 means highest quality
-      });
-      if (!data.cancelled) {
-        let newFile = {
-          uri: data.uri,
-          type: `test/${data.uri.split('.')[1]}`,
-          name: `test/${data.uri.split('.')[1]}`
-        };
-        this.onUpload(newFile);
-      }
-    } else {
-      Alert.alert('You need to give permissions');
-    }
+export default class Camera extends React.Component {
+  state = {
+    image: undefined,
   };
 
-  pickFromCamera = async () => {
-    const { granted } = await Permissions.askAsync(Permissions.CAMERA);
-    if (granted) {
-      let data = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1
-      });
-      if (!data.cancelled) {
-        let newFile = {
-          uri: data.uri,
-          type: `test/${data.uri.split('.')[1]}`,
-          name: `test/${data.uri.split('.')[1]}`
-        };
-        this.onUpload(newFile);
-      }
-    } else {
-      Alert.alert('You need to give permissions');
-    }
+  selectPicture = async () => {
+    await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
+      aspect: [4,3],
+      allowsEditing: true,
+    });
+    if (!cancelled) this.setState({ image: uri });
   };
 
-  onUpload = async (image) => {
-    // Do what ever you need with the image.
-    console.log(image);
+  takePicture = async () => {
+    await Permissions.askAsync(Permissions.CAMERA);
+    const { cancelled, uri } = await ImagePicker.launchCameraAsync({
+      allowsEditing: false,
+    });
+    this.setState({ image: uri });
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={this.pickFromGallery} style={styles.button}>
-          <Text style={styles.text}>Select From Gallery</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.pickFromCamera} style={styles.button}>
-          <Text style={styles.text}>Select From Camera</Text>
-        </TouchableOpacity>
+        <Image style={styles.image} source={{ uri: this.state.image }} />
+        <View style={styles.row}>
+          <Button onPress={this.selectPicture}>Gallery</Button>
+          <Button onPress={this.takePicture}>Camera</Button>
+        </View>
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'column'
-  },
-  button: {
-    backgroundColor: '#85B8E3',
-    padding: 10,
-    borderRadius: 15,
-    margin: 5,
-    width: 350,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  text: {
-    color: '#ffffff',
-    fontWeight: 'bold'
-  }
-});
+const Button = ({ onPress, children }) => (
+  <TouchableOpacity style={styles.button} onPress={onPress}>
+    <Text style={styles.text}>{children}</Text>
+  </TouchableOpacity>
+);
 
-export default Camera;
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 21,
+  },
+  row: { flexDirection: 'row' },
+  image: { width: 300, height: 300, backgroundColor: 'gray' },
+  button: {
+    padding: 13,
+    margin: 15,
+    backgroundColor: '#dddddd',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
