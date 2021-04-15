@@ -14,7 +14,23 @@ export default class Home extends React.Component {
       aspect: [4,3],
       allowsEditing: true,
     });
+    console.log(uri);
     if (!cancelled) this.setState({ image: uri });
+
+    // let response = await fetch(
+    //   'BASE_URL' + '/api/upload', {
+    //     method:'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       file: uri
+    //     }),
+    //   }
+    // );
+
+    // let responseJson = await response.json();
+    // console.log(responseJSon);
   };
 
   takePicture = async () => {
