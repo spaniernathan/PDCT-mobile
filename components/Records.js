@@ -1,8 +1,9 @@
 import React from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, FlatList } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, FlatList, Image } from 'react-native'
 import CardList from './CardList';
 
 function Details(props) {
+
   return (
     <>
       <Text style={styles.baseText}>

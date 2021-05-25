@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, Alert } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import ApiKeys from '../database/firebase';
@@ -34,7 +34,12 @@ export default class Home extends React.Component {
 
   uploadPicture = async () => {
      const data = new FormData();
-  
+     let date = new Date();
+     let result = '';
+
+     let hours = date.getHours();
+     let minutes = date.getMinutes();
+     let seconds = date.getSeconds();
      data.append("file", {uri: Platform.OS === "android" ? this.state.image : this.state.image.replace("file://", ""), name: "test.jpg"});
 
      fetch("http://trackyourspot.millen.se/api/upload", {
@@ -45,9 +50,15 @@ export default class Home extends React.Component {
        body: data
      }).then(response => response.json())
        .then(response => {
-         console.log("upload succes", response);
-         alert("Upload success!");
-         this.uploadImageOnFireBase(this.state.image, "test-image");
+         if (response == 1) {
+           result = 'malignant';
+         }
+         else {
+           result = 'benign';
+         }
+         console.log("upload succes", result);
+         Alert.alert(result);
+         this.uploadImageOnFireBase(this.state.image, `${hours}:${minutes}:${seconds}`);
          this.setState({ photo: null });
        })
        .catch(error => {
