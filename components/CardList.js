@@ -33,33 +33,40 @@ export default class CardList extends Component {
   render() {
      return this.state.images.map(image => (
        <SafeAreaView key={image} style={styles.container}>
-         <Image key={image} source={{ uri: image }} style={{ width: 224, height: 224 }} />        
+         <Text style={styles.imageText}>Melanoma: </Text>
+         <Image key={image} source={{ uri: image }} style={styles.image}/>        
        </SafeAreaView>
     ));
   }
 }
 
-const Button = ({ onPress, children }) => (
-  <TouchableOpacity style={styles.button} onPress={onPress}>
-    <Text style={styles.text}>{children}</Text>
-  </TouchableOpacity>
-);
-
 const styles = StyleSheet.create({
   text: {
     fontSize: 21,
   },
-  row: { flexDirection: 'row' },
-  image: { width: 300, height: 300, backgroundColor: 'gray' },
-  button: {
-    padding: 13,
-    margin: 15,
-    backgroundColor: '#dddddd',
+  imageText: {
+    fontSize: 16,
+    paddingLeft: 15 
+  },
+  row: { 
+    flexDirection: 'row' 
+  },
+  image: { 
+    width: 100, 
+    height: 100, 
+    borderRadius: 400/2,
+    backgroundColor: 'gray',
+    margin: 15
   },
   container: {
-    flex: 1,
+    flexDirection: 'row',
+    display: 'flex',
     backgroundColor: '#ffffff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    margin: 15,
+    slide: {
+      flexDirection: 'column',
+    },
   },
 });
