@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, FlatList } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, FlatList, Linking } from 'react-native'
 import {Card} from 'react-native-elements';
 import ApiKeys from '../database/firebase';
 import * as firebase from 'firebase';
@@ -17,8 +17,18 @@ export default class Profile extends React.Component {
 
   deleteData = async () => {
     const imageRefs = await firebase.storage().ref().child('images/').listAll();
-    imageRefs.delete();
+    const urls = await Promise.all(imageRefs.items.map((ref) => ref.getDownloadURL()));
+    if (urls.length != 0) {
+      for (let i = 0; i < urls.length; i++) {
+          let imageDel = await firebase.storage().refFromURL(urls[i]);
+          imageDel.delete();
+      }
+    }
   };
+
+  redirectToGoole = async () => {
+    await Linking.openURL('https://en.wikipedia.org/wiki/Melanoma');
+  }
 
   render() {
     return (
@@ -34,14 +44,13 @@ export default class Profile extends React.Component {
         <SafeAreaView style={styles.container}>
           <FlatList
             data={[
-              {key: 'Read about Melanomas'},
-              {key: 'Check for App Update'},
-              {key: 'Delete all App Data'}
+              {key: 'Read about Melanomas' ,  value: this.redirectToGoole},
+              {key: 'Delete all App Data'  ,  value: this.deleteData }
             ]}
             renderItem={({item}) => (
               <Card containerStyle={styles.card}>
                 <TouchableOpacity>
-                  <Text>{item.key}</Text>
+                  <Text onPress= {item.value}>{item.key}</Text>
                 </TouchableOpacity>
               </Card>
             )}
