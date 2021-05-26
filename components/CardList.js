@@ -65,8 +65,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     margin: 15,
-    slide: {
-      flexDirection: 'column',
-    },
   },
 });
