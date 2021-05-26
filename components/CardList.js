@@ -23,18 +23,21 @@ export default class CardList extends Component {
   async componentDidMount() {
     var array = [];
     const imageRefs = await firebase.storage().ref().child('images/').listAll();
+    console.log(imageRefs);
     const urls = await Promise.all(imageRefs.items.map((ref) => ref.getDownloadURL()));
     for (let i = 0; i < urls.length; i++) {
-        array.push(urls[i]);
+        array.push({
+          key: urls[i],
+          value: firebase.storage().refFromURL(urls[i]).name});
     }
     this.setState({ images: array});
   }
 
   render() {
      return this.state.images.map(image => (
-       <SafeAreaView key={image} style={styles.container}>
-         <Text style={styles.imageText}>Melanoma: </Text>
-         <Image key={image} source={{ uri: image }} style={styles.image}/>        
+       <SafeAreaView key={image.key} style={styles.container}>
+         <Text style={styles.imageText}>Melanoma: {image.value.slice(9)}</Text>
+         <Image key={image.key} source={{ uri: image.key }} style={styles.image}/>        
        </SafeAreaView>
     ));
   }

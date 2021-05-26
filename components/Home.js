@@ -58,7 +58,7 @@ export default class Home extends React.Component {
          }
          console.log("upload succes", result);
          Alert.alert(result);
-         this.uploadImageOnFireBase(this.state.image, `${hours}:${minutes}:${seconds}`);
+         this.uploadImageOnFireBase(this.state.image, `${hours}:${minutes}:${seconds}-` + result);
          this.setState({ photo: null });
        })
        .catch(error => {
