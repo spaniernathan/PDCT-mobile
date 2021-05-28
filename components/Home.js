@@ -16,8 +16,14 @@ export default class Home extends React.Component {
     if (!firebase.apps.length) { firebase.initializeApp(ApiKeys.FireBaseConfig); }
   }
   selectPicture = async () => {
-    await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
+    // Ask the user for the permission to access the media library 
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your photos!");
+      return;
+    }
+      const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
       aspect: [4,3],
       allowsEditing: true,
     });
@@ -25,7 +31,13 @@ export default class Home extends React.Component {
   };
 
   takePicture = async () => {
-    await Permissions.askAsync(Permissions.CAMERA);
+    // Ask the user for the permission to access the media library 
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your photos!");
+      return;
+    }    
     const { cancelled, uri } = await ImagePicker.launchCameraAsync({
       allowsEditing: false,
     });
