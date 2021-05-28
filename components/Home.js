@@ -22,7 +22,6 @@ export default class Home extends React.Component {
       allowsEditing: true,
     });
     if (!cancelled) this.setState({ image: uri });
-    console.log("Gallery URI : ", uri);
   };
 
   takePicture = async () => {
@@ -31,7 +30,6 @@ export default class Home extends React.Component {
       allowsEditing: false,
     });
     this.setState({ image: uri });
-    console.log("take URI : ", uri);
   };
 
   uploadPicture = async () => {
@@ -44,9 +42,7 @@ export default class Home extends React.Component {
      let seconds = date.getSeconds();
      data.append("file", {uri: Platform.OS === "android" ? this.state.image : this.state.image.replace("file://", ""), name: "test.jpg"});
 
-     console.log("DATA : ", data);
      fetch("http://trackyourspot.millen.se/api/upload", {
-    //  fetch("212.25.141.43:10000/api/upload", {
        method: "POST",
        headers: {
          'Accept': 'multipart/form-data',

@@ -23,7 +23,6 @@ export default class CardList extends Component {
   async componentDidMount() {
     var array = [];
     const imageRefs = await firebase.storage().ref().child('images/').listAll();
-    console.log(imageRefs);
     const urls = await Promise.all(imageRefs.items.map((ref) => ref.getDownloadURL()));
     for (let i = 0; i < urls.length; i++) {
         array.push({
@@ -31,6 +30,20 @@ export default class CardList extends Component {
           value: firebase.storage().refFromURL(urls[i]).name});
     }
     this.setState({ images: array});
+  }
+
+  async componentDidUpdate() {
+    var array = [];
+    const imageRefs = await firebase.storage().ref().child('images/').listAll();
+    const urls = await Promise.all(imageRefs.items.map((ref) => ref.getDownloadURL()));
+    for (let i = 0; i < urls.length; i++) {
+        array.push({
+          key: urls[i],
+          value: firebase.storage().refFromURL(urls[i]).name});
+    }
+    if (this.images !== array) {
+      this.setState({ images: array});
+    }
   }
 
   render() {
