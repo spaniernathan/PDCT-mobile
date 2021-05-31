@@ -4,6 +4,7 @@ import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import ApiKeys from '../database/firebase';
 import * as firebase from 'firebase';
+import { Button } from 'react-native-paper';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -90,29 +91,39 @@ export default class Home extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Text style={styles.titleText}>
+          Upload Your Melanomas Here
+          {"\n"}
+          {"\n"}
+        </Text>
         <Image style={styles.image} source={{ uri: this.state.image }} />
-        <View style={styles.row}>
-          <Button onPress={this.selectPicture}>Gallery</Button>
-          <Button onPress={this.takePicture}>Camera</Button>
-          <Button onPress={this.uploadPicture}>Upload</Button>
+        <View style={styles.column}>
+          <Button icon="camera-burst" color="tomato" onPress={this.selectPicture}>Gallery</Button>
+          <Button icon="camera"  color="tomato" onPress={this.takePicture}>Camera</Button>
+          <Button icon="cloud-upload"  color="tomato" onPress={this.uploadPicture}>Upload</Button>
         </View>
       </View>
     );
   }
 }
 
-const Button = ({ onPress, children }) => (
+/*const Button = ({ onPress, children }) => (
   <TouchableOpacity style={styles.button} onPress={onPress}>
     <Text style={styles.text}>{children}</Text>
   </TouchableOpacity>
-);
+);*/
 
 const styles = StyleSheet.create({
   text: {
     fontSize: 21,
   },
+  titleText: {
+    fontSize: 23,
+    fontWeight: "bold",
+    color: "black"
+  },
   row: { flexDirection: 'row' },
-  image: { width: 300, height: 300, backgroundColor: 'gray' },
+  image: { width: 300, height: 300, backgroundColor: 'white' },
   button: {
     padding: 13,
     margin: 15,

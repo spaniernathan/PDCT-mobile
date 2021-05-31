@@ -71,13 +71,12 @@ const styles = StyleSheet.create({
     width: 100, 
     height: 100, 
     borderRadius: 400/2,
-    backgroundColor: 'gray',
     margin: 15
   },
   container: {
     flexDirection: 'row',
     display: 'flex',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#EAEDF0',
     alignItems: 'center',
     justifyContent: 'space-between',
     margin: 15,
