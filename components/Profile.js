@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, FlatList, Linking } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, FlatList, Linking, Alert } from 'react-native'
 import {Card} from 'react-native-elements';
 import ApiKeys from '../database/firebase';
 import * as firebase from 'firebase';
@@ -17,13 +17,20 @@ export default class Profile extends React.Component {
 
   deleteData = async () => {
     const imageRefs = await firebase.storage().ref().child('images/').listAll();
-    const urls = await Promise.all(imageRefs.items.map((ref) => ref.getDownloadURL()));
-    if (urls.length != 0) {
-      for (let i = 0; i < urls.length; i++) {
-          let imageDel = await firebase.storage().refFromURL(urls[i]);
-          imageDel.delete();
+    try {
+      if (imageRefs.items.length > 0) {
+        const urls = await Promise.all(imageRefs.items.map((ref) => ref.getDownloadURL()));
+        if (urls.length != 0) {
+          for (let i = 0; i < urls.length; i++) {
+              let imageDel = await firebase.storage().refFromURL(urls[i]);
+              imageDel.delete();
+          }
+          Alert.alert("All images have been deleted");
+        }
+      } else {
+        Alert.alert("Database empty");
       }
-    }
+    } catch {console.log("Already empty");}
   };
 
   redirectToGoole = async () => {

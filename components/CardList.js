@@ -23,11 +23,14 @@ export default class CardList extends Component {
   async componentDidMount() {
     var array = [];
     const imageRefs = await firebase.storage().ref().child('images/').listAll();
-    const urls = await Promise.all(imageRefs.items.map((ref) => ref.getDownloadURL()));
-    for (let i = 0; i < urls.length; i++) {
-        array.push({
-          key: urls[i],
-          value: firebase.storage().refFromURL(urls[i]).name});
+    if (imageRefs.items.length > 0) {
+      const urls = await Promise.all(imageRefs.items.map(ref => ref.getDownloadURL()));
+      for (let i = 0; i < urls.length; i++) {
+          array.push({
+            key: urls[i],
+            value: firebase.storage().refFromURL(urls[i]).name}
+            );
+        }
     }
     this.setState({ images: array});
   }
@@ -35,21 +38,32 @@ export default class CardList extends Component {
   async componentDidUpdate() {
     var array = [];
     const imageRefs = await firebase.storage().ref().child('images/').listAll();
-    const urls = await Promise.all(imageRefs.items.map((ref) => ref.getDownloadURL()));
-    for (let i = 0; i < urls.length; i++) {
-        array.push({
-          key: urls[i],
-          value: firebase.storage().refFromURL(urls[i]).name});
-    }
+    try {
+      if (imageRefs.items.length > 0) {
+        const urls = await Promise.all(imageRefs.items.map((ref) => ref.getDownloadURL()));
+        for (let i = 0; i < urls.length; i++) {
+            array.push({
+              key: urls[i],
+              value: firebase.storage().refFromURL(urls[i]).name});
+        }
+      }
+    } catch {console.log("oui c'est ici"); this.images = []; array = [];}
     if (this.images !== array) {
-      this.setState({ images: array});
+    this.setState({ images: array});
     }
+  }
+ 
+  componentWillUnmount() {
+    // fix Warning: Can't perform a React state update on an unmounted component
+    this.setState = (state,callback)=>{
+        return;
+    };
   }
 
   render() {
      return this.state.images.map(image => (
        <SafeAreaView key={image.key} style={styles.container}>
-         <Text style={styles.imageText}>Melanoma: {image.value.slice(9)}</Text>
+         <Text style={styles.imageText}>Melanoma: {image.value.replace(/[0-9]/g, '').replace(/::/, '').replace(/-/, '')}</Text>
          <Image key={image.key} source={{ uri: image.key }} style={styles.image}/>        
        </SafeAreaView>
     ));
